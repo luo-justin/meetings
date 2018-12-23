@@ -1,25 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import {Router} from '@reach/router';
+
+import Home from './Home';
+import Welcome from './Welcome';
+import Navigation from './Navigation';
+import Login from './Login';
+import Register from './Register';
+
+
 
 class App extends Component {
+  constructor(){
+    super();
+    this.state = {
+      user: "Justin"
+    }
+  }
+
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <Navigation user={this.state.user}/>
+        {this.state.user && <Welcome user={this.state.user}/>}
+        <Router>
+          <Home path="/" user={this.state.user}/>
+          <Login path="/login"/>
+          <Register path="/register"/>
+
+        </Router>
       </div>
     );
   }
