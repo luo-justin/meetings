@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import firebase from './Firebase';
-import FormError from './FormError';
 import {navigate} from '@reach/router';
 
-class Login extends Component{
+class Checkin extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
+			displayName: '',
 			email: '',
-			password: '',
-			errorMessage: null,
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -26,29 +24,17 @@ class Login extends Component{
 	}
 
 	handleSubmit(e){
-		var registrationInfo = {
-			displayName: this.state.displayName,
-			email: this.state.email,
-			password: this.state.password,
-		}
-
 		e.preventDefault();
-		firebase.auth().signInWithEmailAndPassword(
-			registrationInfo.email,
-			registrationInfo.password,
-
-		)
-		.then(()=>{
-			navigate('/meetings');
-		})
-		.catch(error => {
-			if(error.message){
-				this.setState({errorMessage: error.message});
-			}
-			else{
-				this.setState({errorMessage: null});
-			}
+		const ref = firebase.database()
+		.ref(`meetings/${this.props.userID}/${this.props.meetingID}/attendees`);
+		ref.push({
+			attendeeName: this.state.displayName, 
+			attendeeEmail: this.state.email,
+			star: false
 		});
+
+		navigate(`/attendees/${this.props.userID}/${this.props.meetingID}`)
+	
 	}
 
 	render(){
@@ -60,12 +46,30 @@ class Login extends Component{
 			      <div className="col-lg-6">
 			        <div className="card bg-light">
 			          <div className="card-body">
-			            <h3 className="font-weight-light mb-3">Log in</h3>
+			            <h3 className="font-weight-light mb-3">Check in</h3>
 			            <section className="form-group">
-			            {this.state.errorMessage ? (<FormError message={this.state.errorMessage}/>) : null }
 			              <label
 			                className="form-control-label sr-only"
-			                htmlFor="Email">
+			                htmlFor="displayName"
+			              >
+			                Name
+			              </label>
+			              <input
+			                required
+			                className="form-control"
+			                type="text"
+			                id="displayName"
+			                name="displayName"
+			                placeholder="Name"
+			                value = {this.state.displayName}
+			                onChange = {this.handleChange}
+			              />
+			            </section>
+			            <section className="form-group">
+			              <label
+			                className="form-control-label sr-only"
+			                htmlFor="Email"
+			              >
 			                Email
 			              </label>
 			              <input
@@ -79,20 +83,9 @@ class Login extends Component{
 			                onChange = {this.handleChange}
 			              />
 			            </section>
-			            <section className="form-group">
-			              <input
-			                required
-			                className="form-control"
-			                type="password"
-			                name="password"
-			                placeholder="Password"
-			                value = {this.state.password}
-			                onChange = {this.handleChange}
-			              />
-			            </section>
 			            <div className="form-group text-right mb-0">
 			              <button className="btn btn-primary" type="submit">
-			                Log in
+			                Check in
 			              </button>
 			            </div>
 			          </div>
@@ -106,4 +99,4 @@ class Login extends Component{
 	}
 }
 
-export default Login;
+export default Checkin;
