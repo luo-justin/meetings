@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import firebase from './Firebase';
 import {GoTrashcan, GoListUnordered} from 'react-icons/go';
-import {FaLink} from 'react-icons/fa';
+import {FaPlus} from 'react-icons/fa';
 import {navigate} from '@reach/router';
 
 class MeetingsList extends Component{
@@ -23,22 +23,30 @@ class MeetingsList extends Component{
 		const { meetings } = this.props;
 		const myMeetings = meetings.map(item =>{
 		return(
-			<div className="list-group-item d-flex" key={item.meetingID}>
-
-				<section className="btn-group align-self-center" role="group" aria-label="Meeting Options">
-					<button className="btn btn-sm btn-outline-secondary" title="Delete Meeting" onClick={e => this.deleteMeeting(e, item.meetingID)}>
-					<GoTrashcan />
-					</button>
-					<button className="btn btn-sm btn-outline-secondary" title="Check In" onClick={() => navigate(`/checkin/${this.props.userID}/${item.meetingID}`)}>
-					<FaLink />
-					</button>
-					<button className="btn btn-sm btn-outline-secondary" title="Attendees List" onClick={() => navigate(`/attendees/${this.props.userID}/${item.meetingID}`)}>
-					<GoListUnordered />
-					</button>
-				</section>
-				<section className="pl-3 text-align align-self-center">
-				{item.meetingName}
-				</section>
+			<div className="list-group-item" key={item.meetingID}>
+				<div class="card border-0">
+			    <div class="text-left" id="headingOne">
+			        <button class="btn btn-link " type="button" data-toggle="collapse" data-target={"#collapse-" +  item.meetingID} aria-expanded="true" aria-controls="collapseOne">
+			          <h4>{item.meetingName}</h4>
+			        </button>
+			        <section className="btn-group align-self-center" role="group" aria-label="Meeting Options">
+								<button className="btn btn-sm btn-outline-secondary" title="Delete Meeting" onClick={e => this.deleteMeeting(e, item.meetingID)}>
+								<GoTrashcan />
+								</button>
+								<button className="btn btn-sm btn-outline-secondary" title="Check In" onClick={() => navigate(`/checkin/${this.props.userID}/${item.meetingID}`)}>
+								<FaPlus />
+								</button>
+								<button className="btn btn-sm btn-outline-secondary" title="Attendees List" onClick={() => navigate(`/attendees/${this.props.userID}/${item.meetingID}`)}>
+								<GoListUnordered />
+								</button>
+							</section>
+			    </div>
+			    <div id={"collapse-" +  item.meetingID} class="collapse hide" aria-labelledby="headingOne" data-parent="#accordionExample">
+			      <div class="card-body text-left">
+			      	{item.meetingDescription}
+			      </div>
+			    </div>
+			  </div>
 			</div>
 		);
 	});

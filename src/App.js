@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.js';
+
 import {Router, navigate} from '@reach/router';
 import firebase from './Firebase';
 
@@ -40,7 +42,8 @@ class App extends Component {
         for(let item in meetings){
           meetingsList.push({
             meetingID: item,
-            meetingName: meetings[item].meetingName
+            meetingName: meetings[item].meetingName,
+            meetingDescription: meetings[item].meetingDescription
           });
         }
 
@@ -71,9 +74,9 @@ class App extends Component {
   }
 
 
-  addMeeting = meetingName => {
+  addMeeting = (meetingName, meetingDescription) => {
      const ref = firebase.database().ref(`meetings/${this.state.user.uid}`);
-     ref.push({meetingName: meetingName});
+     ref.push({meetingName: meetingName, meetingDescription: meetingDescription});
   }
 
   registerUser = userName =>{

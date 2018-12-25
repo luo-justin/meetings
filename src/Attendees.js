@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import firebase from './Firebase';
 import AttendeesList from './AttendeesList';
+import {FaUndo, FaRandom} from 'react-icons/fa';
 
 class Attendees extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
 			searchQuery: '',
+			allAttendees: [],
 			displayAttendees: []
 		}
 		this.handleChange = this.handleChange.bind(this);
+		this.resetQuery = this.resetQuery.bind(this);
+		this.chooseRandom = this.chooseRandom.bind(this);
+
 	}
 
 	componentDidMount(){
@@ -26,8 +31,16 @@ class Attendees extends Component{
 				});
 			}
 			this.setState({
+				allAttendees: attendeesList,
 				displayAttendees: attendeesList
 			})
+		});
+	}
+
+	resetQuery(){
+		this.setState({
+			searchQuery: '',
+			displayAttendees: this.state.allAttendees
 		});
 	}
 
@@ -38,6 +51,14 @@ class Attendees extends Component{
 		const state = this.state;
 		state[itemName] = itemValue;
 		this.setState(state);
+	}
+
+	chooseRandom(){
+		const randomAttendee= Math.floor(Math.random() * this.state.allAttendees.length);
+		this.resetQuery();
+		this.setState({
+			displayAttendees: [this.state.allAttendees[randomAttendee]]
+		});
 	}
 
 	render(){
@@ -51,10 +72,20 @@ class Attendees extends Component{
 			      <h1 className="font-weight-light text-center">
 			        Attendees
 			      </h1>
-
 			      <div className="card bg-light mb-4">
 			      	<div classNam="card-body text-center">
-			      		<input type="text" name="searchQuery" value={this.state.searchQuery} placeholder="Search Attendees" className="form-control" onChange={this.handleChange}/>
+				      	<div className="input-group input-group-lg">
+				      		<input type="text" name="searchQuery" value={this.state.searchQuery} placeholder="Search Attendees" className="form-control" onChange={this.handleChange}/>
+				      		<div className="input-group-append">
+					      		<button className="btn btn-sm btn-outline-info" title="Reset search" onClick={()=> this.resetQuery()}>
+					      		<FaUndo/>
+					      		</button>
+
+					      		<button className="btn btn-sm btn-outline-info" title="Pick a Random Attendee" onClick={()=> this.chooseRandom()}>
+					      		<FaRandom/>
+					      		</button>
+				      		</div>
+				      	</div>
 			      	</div>
 			      </div>
 
